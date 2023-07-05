@@ -1,37 +1,35 @@
 #!/usr/bin/python3
-"""
-This module contains a function that divides all elements of a matrix.
-"""
+"""Defines a matrix division function."""
 
 
 def matrix_divided(matrix, div):
-    """
-    matrix_divided- Function that divides all elemets of a matrix.
+    """Divide all elements of a matrix.
+
     Args:
-        matrix: List of lists to be divided.
-        div: divisor.
+        matrix (list): A list of lists of ints or floats.
+        div (int/float): The divisor.
+    Raises:
+        TypeError: If the matrix contains non-numbers.
+        TypeError: If the matrix contains rows of different sizes.
+        TypeError: If div is not an int or float.
+        ZeroDivisionError: If div is 0.
     Returns:
-        A matrix with te result of division.
+        A new matrix representing the result of the division.
     """
-    err = 'matrix must be a matrix (list of lists) of integers/floats'
-    err1 = 'Each row of the matrix must have the same size'
-    ans = []
-    if((div is None) or (type(div) != int) and (type(div) != float)):
+    if (not isinstance(matrix, list) or matrix == [] or
+            not all(isinstance(row, list) for row in matrix) or
+            not all((isinstance(ele, int) or isinstance(ele, float))
+                    for ele in [num for row in matrix for num in row])):
+        raise TypeError("matrix must be a matrix (list of lists) of "
+                        "integers/floats")
+
+    if not all(len(row) == len(matrix[0]) for row in matrix):
+        raise TypeError("Each row of the matrix must have the same size")
+
+    if not isinstance(div, int) and not isinstance(div, float):
         raise TypeError("div must be a number")
+
     if div == 0:
         raise ZeroDivisionError("division by zero")
-    if (type(matrix) != list):
-        raise TypeError(err)
 
-    for i in range(0, len(matrix)):
-        if (type(matrix[i]) != list):
-            raise TypeError(err)
-        put_in = []
-        for j in range(0, len(matrix[i])):
-            if ((type(matrix[i][j]) != int) and (type(matrix[i][j]) != float)):
-                raise TypeError(err)
-            if (len(matrix[0]) != len(matrix[i])):
-                raise TypeError(err1)
-            put_in.append(round((matrix[i][j]) / div, 2))
-        ans.append(put_in)
-    return (ans)
+    return ([list(map(lambda x: round(x / div, 2), row)) for row in matrix])
